@@ -1,0 +1,14 @@
+body{
+    background : rgb(161, 226, 218);
+}
+
+img{
+    width: 50vw;
+
+}
+
+p{
+    font-size: 12px;
+    color:beige;
+    border:10px dotted rgb(252, 198, 241);
+}
