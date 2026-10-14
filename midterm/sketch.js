@@ -18,14 +18,18 @@ function draw() {
   let h = bg.height * s;
   image(bg, (width - w) / 2, (height - h) / 2, w, h);
 
+  // bg2
+  rectMode(CORNER);
+  noStroke();
+  fill(0, 0, 0, 40);
+  rect(0, 0, width, height);
+
   // scale
-  let scaleFactor = 0.55;
+  let scaleFactor = 0.68;
+  let x = width - 260;
+  let y = 140;
 
-  // CD 위치 
-  let x = width - 150;
-  let y = 110;
-
-  // middle
+  // particles behind cd -> 화면 중앙 생성
   if (isPlaying && frameCount % 40 == 0) {
     let a = random(TWO_PI);
     let r = random(200, 450) * scaleFactor;
@@ -47,7 +51,7 @@ function draw() {
   translate(x, y);
   scale(scaleFactor);
 
-  // --- CD 그려지는 부분 ---
+  // CD
   push();
   rotate(angle);
 
@@ -94,7 +98,7 @@ function draw() {
   ellipse(0, 0, 35, 35);
   pop();
 
-  // --- Panel 그려지는 부분 ---
+  // Panel
   let panelX = 0;
   let panelY = 230;
 
@@ -181,9 +185,9 @@ function draw() {
 function mousePressed() {
   userStartAudio();
 
-  let scaleFactor = 0.55;
-  let cdX = width - 150;
-  let cdY = 110;
+  let scaleFactor = 0.68;
+  let cdX = width - 260;
+  let cdY = 140;
   let wheelX = cdX - 120 * scaleFactor;
   let wheelY = cdY + 230 * scaleFactor;
   let clicked = false;
