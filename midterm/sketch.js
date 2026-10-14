@@ -24,14 +24,13 @@ function draw() {
   fill(0, 0, 0, 40);
   rect(0, 0, width, height);
 
-  // ★ 확실한 크기 변화를 위해 0.75배 적용
+  // 
   let scaleFactor = 0.75;
 
-  // ★ 화면 너비/높이의 비율로 위치를 지정 (확실히 이동되도록 위치 조정)
   let x = width * 0.78;
   let y = height * 0.22;
 
-  // particles behind cd -> 화면 중앙 생성
+  // particles behind
   if (isPlaying && frameCount % 40 == 0) {
     let a = random(TWO_PI);
     let r = random(200, 450) * scaleFactor;
@@ -48,12 +47,12 @@ function draw() {
     }
   }
 
-  // CD & Panel 통합 스케일 적용
+  // CD & Panel 
   push();
   translate(x, y);
   scale(scaleFactor);
 
-  // --- CD 그려지는 부분 ---
+  //  CD
   push();
   rotate(angle);
 
@@ -100,7 +99,7 @@ function draw() {
   ellipse(0, 0, 35, 35);
   pop();
 
-  // --- Panel 그려지는 부분 ---
+  // Panel
   let panelX = 0;
   let panelY = 230;
 
