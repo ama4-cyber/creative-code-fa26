@@ -24,16 +24,14 @@ function draw() {
   fill(0, 0, 0, 40);
   rect(0, 0, width, height);
 
-  // 
-  let scaleFactor = 0.75;
+  //  cd position
+  let x = width - 200;
+  let y = 140;
 
-  let x = width * 0.78;
-  let y = height * 0.22;
-
-  // particles behind
+  // particles behind 
   if (isPlaying && frameCount % 40 == 0) {
     let a = random(TWO_PI);
-    let r = random(200, 450) * scaleFactor;
+    let r = random(200, 450);
     explode(width / 2 + cos(a) * r, height / 2 + sin(a) * r, 50);
   }
 
@@ -47,13 +45,9 @@ function draw() {
     }
   }
 
-  // CD & Panel 
+  // CD 
   push();
   translate(x, y);
-  scale(scaleFactor);
-
-  //  CD
-  push();
   rotate(angle);
 
   // cd outside
@@ -97,11 +91,16 @@ function draw() {
   noStroke();
   fill(0, 0, 0, 25);
   ellipse(0, 0, 35, 35);
+
   pop();
 
-  // Panel
-  let panelX = 0;
-  let panelY = 230;
+  if (isPlaying) {
+    angle += 0.05;
+  }
+
+  // panel
+  let panelX = x;
+  let panelY = y + 230;
 
   // panel out
   stroke(210);
@@ -175,31 +174,25 @@ function draw() {
   textSize(12);
   fill(100);
   text("1:38", displayX, panelY + 28);
-
-  pop();
-
-  if (isPlaying) {
-    angle += 0.05;
-  }
 }
 
 function mousePressed() {
   userStartAudio();
 
-  let scaleFactor = 0.75;
-  let cdX = width * 0.78;
-  let cdY = height * 0.22;
-  let wheelX = cdX - 120 * scaleFactor;
-  let wheelY = cdY + 230 * scaleFactor;
+  // ★ draw와 동일한 기준 위치 설정
+  let cdX = width - 200;
+  let cdY = 140;
+  let wheelX = cdX - 120;
+  let wheelY = cdY + 230;
   let clicked = false;
 
   // cd click
-  if (dist(mouseX, mouseY, cdX, cdY) < 150 * scaleFactor) {
+  if (dist(mouseX, mouseY, cdX, cdY) < 150) {
     clicked = true;
   }
 
   // panel wheel click
-  if (dist(mouseX, mouseY, wheelX, wheelY) < 25 * scaleFactor) {
+  if (dist(mouseX, mouseY, wheelX, wheelY) < 25) {
     clicked = true;
   }
 
@@ -236,7 +229,7 @@ class Particle {
     this.pos = createVector(x, y);
 
     let a = random(TWO_PI);
-    let speed = random(5, 14);
+    let speed = random(8, 25);
     this.vel = createVector(cos(a) * speed, sin(a) * speed);
     this.acc = createVector(0, 0.03);
 
@@ -265,7 +258,7 @@ class Particle {
     }
 
     this.age = random(150, 255);
-    this.baseSize = random(6, 20);
+    this.baseSize = random(12, 36);
     this.size = this.baseSize;
     this.angle = random(TWO_PI);
     this.spin = random(-0.15, 0.15);
@@ -280,7 +273,7 @@ class Particle {
 
     if (this.age > 0) {
       this.age -= 2;
-      this.size = this.baseSize * (this.age / 255) + 2;
+      this.size = this.baseSize * (this.age / 255) + 4;
     } else {
       this.dead = true;
     }
@@ -313,7 +306,7 @@ class Particle {
     } else {
       noFill();
       stroke(this.fill);
-      strokeWeight(2);
+      strokeWeight(3);
       circle(0, 0, this.size);
     }
     pop();
