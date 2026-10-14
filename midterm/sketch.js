@@ -24,15 +24,18 @@ function draw() {
   fill(0, 0, 0, 40);
   rect(0, 0, width, height);
 
-  // ★ 오른쪽 위 영역으로 CD 기준 위치 변경 (상단에서 200px, 오른쪽에서 220px 떨어진 지점)
-  let x = width - 220;
-  let y = 200;
+  // ★ 확실한 크기 변화를 위해 0.75배 적용
+  let scaleFactor = 0.75;
 
-  // particles behind cd
+  // ★ 화면 너비/높이의 비율로 위치를 지정 (확실히 이동되도록 위치 조정)
+  let x = width * 0.78;
+  let y = height * 0.22;
+
+  // particles behind cd -> 화면 중앙 생성
   if (isPlaying && frameCount % 40 == 0) {
     let a = random(TWO_PI);
-    let r = random(200, 450);
-    explode(x + cos(a) * r, y + sin(a) * r, 50);
+    let r = random(200, 450) * scaleFactor;
+    explode(width / 2 + cos(a) * r, height / 2 + sin(a) * r, 50);
   }
 
   for (let i = 0; i < particles.length; i++) {
@@ -45,9 +48,13 @@ function draw() {
     }
   }
 
-  // CD 
+  // CD & Panel 통합 스케일 적용
   push();
   translate(x, y);
+  scale(scaleFactor);
+
+  // --- CD 그려지는 부분 ---
+  push();
   rotate(angle);
 
   // cd outside
@@ -91,16 +98,11 @@ function draw() {
   noStroke();
   fill(0, 0, 0, 25);
   ellipse(0, 0, 35, 35);
-
   pop();
 
-  if (isPlaying) {
-    angle += 0.05;
-  }
-
-  // panel
-  let panelX = x;
-  let panelY = y + 230;
+  // --- Panel 그려지는 부분 ---
+  let panelX = 0;
+  let panelY = 230;
 
   // panel out
   stroke(210);
@@ -174,25 +176,31 @@ function draw() {
   textSize(12);
   fill(100);
   text("1:38", displayX, panelY + 28);
+
+  pop();
+
+  if (isPlaying) {
+    angle += 0.05;
+  }
 }
 
 function mousePressed() {
   userStartAudio();
 
-  // ★ mousePressed 함수 내 좌표도 동일하게 이동
-  let cdX = width - 220;
-  let cdY = 200;
-  let wheelX = cdX - 120;
-  let wheelY = cdY + 230;
+  let scaleFactor = 0.75;
+  let cdX = width * 0.78;
+  let cdY = height * 0.22;
+  let wheelX = cdX - 120 * scaleFactor;
+  let wheelY = cdY + 230 * scaleFactor;
   let clicked = false;
 
   // cd click
-  if (dist(mouseX, mouseY, cdX, cdY) < 150) {
+  if (dist(mouseX, mouseY, cdX, cdY) < 150 * scaleFactor) {
     clicked = true;
   }
 
-  // panel click
-  if (dist(mouseX, mouseY, wheelX, wheelY) < 25) {
+  // panel wheel click
+  if (dist(mouseX, mouseY, wheelX, wheelY) < 25 * scaleFactor) {
     clicked = true;
   }
 
@@ -200,7 +208,7 @@ function mousePressed() {
     isPlaying = !isPlaying;
 
     if (isPlaying) {
-      explode(cdX, cdY, 120);
+      explode(width / 2, height / 2, 120);
     }
 
     if (song) {
@@ -228,13 +236,11 @@ class Particle {
   constructor(x, y) {
     this.pos = createVector(x, y);
 
-    // spread out speed
     let a = random(TWO_PI);
-    let speed = random(8, 25);
+    let speed = random(5, 14);
     this.vel = createVector(cos(a) * speed, sin(a) * speed);
     this.acc = createVector(0, 0.03);
 
-    // Y2K color
     let pick = random(1);
     if (pick < 0.2) {
       this.fill = color(0, 240, 255);
@@ -248,7 +254,6 @@ class Particle {
       this.fill = color(255, 215, 245);
     }
 
-    // shape (0=twinkle, 1=shine ball, 2=circle, 3=ring)
     let s = random(1);
     if (s < 0.4) {
       this.shape = 0;
@@ -261,7 +266,7 @@ class Particle {
     }
 
     this.age = random(150, 255);
-    this.baseSize = random(12, 36);
+    this.baseSize = random(6, 20);
     this.size = this.baseSize;
     this.angle = random(TWO_PI);
     this.spin = random(-0.15, 0.15);
@@ -276,7 +281,7 @@ class Particle {
 
     if (this.age > 0) {
       this.age -= 2;
-      this.size = this.baseSize * (this.age / 255) + 4;
+      this.size = this.baseSize * (this.age / 255) + 2;
     } else {
       this.dead = true;
     }
@@ -289,7 +294,6 @@ class Particle {
     noStroke();
     blendMode(SCREEN);
 
-    // stroke glow
     this.fill.setAlpha(this.age * 0.15);
     fill(this.fill);
     circle(0, 0, this.size * 2);
@@ -298,22 +302,19 @@ class Particle {
     fill(this.fill);
 
     if (this.shape == 0) {
-      // twinkle
       ellipse(0, 0, this.size * 1.6, this.size * 0.3);
       rotate(PI / 2);
       ellipse(0, 0, this.size * 1.6, this.size * 0.3);
     } else if (this.shape == 1) {
-      // shine ball
       circle(0, 0, this.size);
       fill(255, 255, 255, this.age);
       circle(-this.size * 0.15, -this.size * 0.15, this.size * 0.3);
     } else if (this.shape == 2) {
       circle(0, 0, this.size);
     } else {
-      // ring
       noFill();
       stroke(this.fill);
-      strokeWeight(3);
+      strokeWeight(2);
       circle(0, 0, this.size);
     }
     pop();
