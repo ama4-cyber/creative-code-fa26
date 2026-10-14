@@ -24,8 +24,7 @@ function draw() {
   fill(0, 0, 0, 40);
   rect(0, 0, width, height);
 
-  //  cd position
-  let x = width - 200;
+  let x = width - 150;
   let y = 140;
 
   // particles behind 
@@ -179,8 +178,7 @@ function draw() {
 function mousePressed() {
   userStartAudio();
 
-  // ★ draw와 동일한 기준 위치 설정
-  let cdX = width - 200;
+  let cdX = width - 150;
   let cdY = 140;
   let wheelX = cdX - 120;
   let wheelY = cdY + 230;
